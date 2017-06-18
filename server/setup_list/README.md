@@ -30,7 +30,9 @@ b03901018<br>
 b03901078
 
 ## Outputs
-The first line contains number of users, and the second line contains all users' ids.
+The first line contains u, number of users, and the second line contains all u users' ids.
+The fourth line contains g, number of groups, and g following lines contain u_i number of users in the group, group name (prefix), and all u_i users' ids.
+
 
 ### Example
 11<br>
