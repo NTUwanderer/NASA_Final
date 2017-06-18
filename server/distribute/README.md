@@ -55,7 +55,6 @@ The first line contains k, number of nfs.
 
 The number m after "Move" is number of user transitions, and m lines following, each contains the user id, prev nfs index, and new nfs index.
 
+k lines Following "Remove", with the i-th line containing r_i, number of removed users, and r_i user ids.
+
 k lines Following "Add", with the i-th line containing a_i, number of newly added users, and a_i user ids.
-
-
-k lines Following "Add", with the i-th line containing r_i, number of removed users, and r_i user ids.

@@ -104,6 +104,16 @@ int main(int argc, char** argv) {
 
 	modified << modifiedCount << "\n" << pairs;
 
+	modified << "\nRemove\n";
+
+	for (int i = 0; i < numOfNfs; ++i) {
+		modified << t_nfs[i].size();
+		for (int j = 0; j < t_nfs[i].size(); ++j) {
+			modified << " " << t_nfs[i][j];
+		}
+		modified << "\n";
+	}
+
 	modified << "\nAdd\n";
 
 	for (int i = 0; i < numOfNfs; ++i) {
@@ -123,16 +133,6 @@ int main(int argc, char** argv) {
 		}
 	}
 	
-	modified << "\nRemove\n";
-
-	for (int i = 0; i < numOfNfs; ++i) {
-		modified << t_nfs[i].size();
-		for (int j = 0; j < t_nfs[i].size(); ++j) {
-			modified << " " << t_nfs[i][j];
-		}
-		modified << "\n";
-	}
-
 	dist << numOfNfs << "\n";
 	for (int i = 0; i < numOfNfs; ++i) {
 		dist << new_nfs[i].size();
