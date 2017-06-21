@@ -41,7 +41,7 @@ done
 
 modified=$(cat "$3")
 nol=$(echo "$modified" | wc -l)
-numOfNfs=$(echo "$modified" | cut -d$'\n' -f1)
+numOfNfs=$(echo "$modified" | head -n 1)
 
 for (( count=0; $count<$nol; count=$count+1 )); do
 	entry=$(echo "$modified" | sed -n "$((count+1))p")
