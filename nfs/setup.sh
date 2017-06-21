@@ -18,3 +18,8 @@ systemctl start nfs-idmap
 firewall-cmd --permanent --zone=public --add-service=nfs
 firewall-cmd --reload
 
+yum install -y openssh-server
+systemctl start sshd
+systemctl enable sshd
+mkdir ~/.ssh
+
