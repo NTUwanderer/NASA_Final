@@ -22,7 +22,7 @@ int main() {
 			while (number.size() < 3)
 				number = '0' + number;
 
-			output += prefix + number + " ";
+			output += prefix + "/" + prefix + number + " ";
 			group_list += " " + prefix + number;
 		}
 		group_list += "\n";
@@ -34,7 +34,7 @@ int main() {
 		for (int i = 0; i < inds; ++i) {
 			string individual;
 			cin >> individual;
-			output += individual + " ";
+			output += "others/" + individual + " ";
 			group_list += " " + individual;
 		}
 	}
