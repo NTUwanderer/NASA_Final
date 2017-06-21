@@ -79,3 +79,5 @@ done
 
 echo -e "$exportsOutput" > "$exportFilePath"
 
+./restart_nfs_service.sh
+
