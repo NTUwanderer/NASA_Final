@@ -1,4 +1,5 @@
 #!/bin/bash
+# input user_list
 
 IFS=$'\n'
 

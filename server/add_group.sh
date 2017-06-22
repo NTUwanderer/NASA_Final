@@ -3,5 +3,5 @@
 
 IFS=$'\n'
 
-rm -rf "/home/$1"
+mkdir "/home/$1"
 
