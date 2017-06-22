@@ -4,13 +4,12 @@
 
 IFS=$'\n'
 
-baseDIR="./"
-prefix="${baseDIR}autofs/"
+prefix="/autofs/"
 group=$(echo $1 | cut -d'/' -f1)
 name=$(echo $1 | cut -d'/' -f2)
 
-ln -s ${prefix}$2$1 /home/$group
+ln -s ${prefix}$2/$1 /home/$1
 
-useradd $name -b /home/$1
+useradd $name -b /home/$group
 echo -e "${name}\n${name}\n" | passwd "$name"
 
