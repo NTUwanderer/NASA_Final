@@ -85,7 +85,7 @@ for (( count=0; $count<$nol; count=$count+1 )); do
 			IFS=' '
 			if [ "$number" != "0" ]; then
 				for groupAndName in $(echo "$temp" | cut -d' ' -f2-); do
-					./add_user.sh $groupAndName $nfs
+					./add_user.sh $groupAndName $nfs $nfs_servers
 				done
 			fi
 			IFS=$'\n'
