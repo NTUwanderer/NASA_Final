@@ -1,0 +1,3 @@
+Use permissive to login as usual users
+sestatus
+setenforce 0
