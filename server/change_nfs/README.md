@@ -4,7 +4,7 @@ Redistribute the grouping based on the previous distribution and number of add/r
 
 ## Compile
 ```bash
-$ g++ main.cpp -o main.out
+$ g++ main.cpp -std=c++11 -o main.out
 ```
 
 ## Execute
