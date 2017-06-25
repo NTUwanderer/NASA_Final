@@ -1,6 +1,6 @@
 #!/bin/bash
 # input: added_list_of_nfs
-# Make sure the added NFS servers are running and accessible with their ips, and setup_ssh.sh is executed for the NFS servers
+# Make sure the added NFS servers are running and accessible with their ips
 
 IFS=$'\n'
 
@@ -30,15 +30,14 @@ setup_ssh="setup_ssh.sh"
 refresh_nfs="refresh_nfs.sh"
 
 for entry in $(cat $added_list_of_nfs_path); do
-	# number=$(echo "$entry" | cut -f1 -d' ' | cut -f2 -d's') # Make sure name is in nfsXXX format
+	number=$(echo "$entry" | cut -f1 -d' ' | cut -f2 -d's') # Make sure name is in nfsXXX format
 	ip=$(echo "$entry" | cut -f2 -d' ')
 	sshname=$(echo "$entry" | cut -f2 -d' ')
 
-	# $setup_ssh $number $ip
+	$setup_ssh $number $ip
+
 	temp_change="temp/tc_$tempTimeStamp"
-
 	$group_user_change $empty_list $user_list > $temp_change
-
 	$refresh_nfs $sshname $temp_change $user_list
 	
 done

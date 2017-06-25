@@ -1,8 +1,9 @@
 # input number ip
 
+rootpass="root"
 ssh-keygen -b 4096 -t rsa -C "nfs$1" -N nasa-nfs"$1" -f ~/.ssh/id_rsa"$1"
-scp ~/.ssh/id_rsa"$1".pub root@"$2":~/.ssh/
-ssh root@"$2" << EOF
+sshpass -p $rootpass scp ~/.ssh/id_rsa"$1".pub root@"$2":~/.ssh/
+sshpass -p $rootpass ssh root@"$2" << EOF
 	cat ~/.ssh/id_rsa"$1".pub >> ~/.ssh/authorized_keys
 	echo -e "\n" >> ~/.ssh/authorized_keys
 	rm ~/.ssh/id_rsa"$1".pub
