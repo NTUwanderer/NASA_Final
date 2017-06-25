@@ -23,7 +23,7 @@ group_user_change="exec/group_user_change.out"
 update_autofs="./update_autofs.sh"
 update_users="./update_users.sh"
 
-str="'$*"
+str="$*"
 # str=$(echo $str | cut -d' ' -f2-)
 
 mv $dist $prev_dist
@@ -35,4 +35,6 @@ $remove_nfs $prev_list_of_nfs_path $change_nfs $prev_dist $dist $modified $list_
 $update_autofs extract_groups.sh $user_list $list_of_nfs_path
 
 $update_users $empty $list_of_nfs_path $modified
+
+./r_update_nfs.sh $prev_list_of_nfs_path $list_of_nfs_path $str
 
