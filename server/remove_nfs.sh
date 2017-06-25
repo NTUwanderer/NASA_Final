@@ -7,14 +7,6 @@ IFS=$'\n'
 
 newList="new_list_of_nfs"
 
-nfs_servers=""
-numOfNfs=0
-for entry in $(cat $1); do
-	name=$(echo "$entry" | cut -f1 -d' ')
-	nfs_servers="${nfs_servers}${name} "
-	numOfNfs=$((numOfNfs+1))
-done
-
 str="'$*"
 str=$(echo $str | cut -d' ' -f6-)
 
@@ -28,19 +20,19 @@ if [ -f $newList ]; then
 fi
 
 index=0
-zero=0
 for entry in $(cat $1); do
-	flag=0
+	flag=true
 
 	IFS=' '
 
 	for num in $(echo $str); do
 		if [ "$index" == "$num" ]; then
-			flag=$((flag+1))
+			flag=false
+			break
 		fi
 	done
 
-	if [ "$flag" == "$zero" ]; then
+	if [ $flag == true ]; then
 		echo $entry >> $newList
 	fi
 
@@ -48,5 +40,4 @@ for entry in $(cat $1); do
 
 	index=$((index+1))
 done
-
 
