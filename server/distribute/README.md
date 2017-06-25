@@ -24,37 +24,33 @@ $ ./main.out <user_list> <prev_dist> <dist> <modified>
 <modified> is a file recording all modifications that should be handle.
 
 ### Example of dist
-3<br>
-4 b03902001 b03902002 b03902003 b04902001<br>
-4 b04902002 b04902003 b05902001 b05902002<br>
-3 b05902003 b03901018 b03901078<br>
+2<br>
+6 b03902/b03902001 b03902/b03902002 b03902/b03902003 b04902/b04902001 b04902/b04902002 b04902/b04902003<br>
+5 b05902/b05902001 b05902/b05902002 b05902/b05902003 others/b03901018 others/b03901078
 
 #### Format
 The first line contains number of nfs.
 
-The following lines contain n_i, number of users in the i-th nfs, and n_i user ids.
+The following lines contain n_i, number of users in the i-th nfs, and n_i user groups/ids.
 
 ### Example of modified
-3<br>
+2
 
-Move 1<br>
-b03902003 1 0<br>
-
-Add<br>
-1 b04902001<br>
-2 b05902001 b05902002<br>
-0<br>
+Move 0
 
 Remove<br>
-2 b03902004 b03902005<br>
-0<br>
-0<br>
+3 b03902/b03902001 b03902/b03902002 b03902/b03902003<br>
+2 b05902/b05902003 others/b03901078
+
+Add<br>
+3 b04902/b04902004 b06902/b06902001 b06902/b06902002<br>
+2 b06902/b06902003 others/b03901019
 
 #### Format
 The first line contains k, number of nfs.
 
-The number m after "Move" is number of user transitions, and m lines following, each contains the user id, prev nfs index, and new nfs index.
+The number m after "Move" is number of user transitions, and m lines following, each contains the user group/id, prev nfs index, and new nfs index.
 
-k lines Following "Remove", with the i-th line containing r_i, number of removed users, and r_i user ids.
+k lines Following "Remove", with the i-th line containing r_i, number of removed users, and r_i user groups/ids.
 
-k lines Following "Add", with the i-th line containing a_i, number of newly added users, and a_i user ids.
+k lines Following "Add", with the i-th line containing a_i, number of newly added users, and a_i user groups/ids.
