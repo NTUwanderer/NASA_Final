@@ -44,7 +44,8 @@ Name=enp0s8
 Address=192.168.100.3/24
 \end{minted}
 So that the IP addresses of NFS server and workstation server will be constant, which is the value given manually.
-And the mount points are divided by grades of users. i.e. b03, b04, b05, etc. For example, in NFS-1:
+And the mount points are divided by grades of users. i.e. b03, b04, b05, etc. For example, in NFS-1, mount points are
+/etc/nfsshare/\{b03902,b04902,b05902\}
 \subsection{Server Setup}
 First, to decrease system loading, we use {\cs autofs} to mount the NFS directories. Only when the mounted points are used will they be mounted. 
 If a mount point is not used for a given time, it will be unmounted. 
@@ -76,7 +77,7 @@ The only data now we have is the current user\_list and the current distribution
 All we need to do is shown in Figure \ref{userChange}.
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{Fig2.png}
+\includegraphics[width=\textwidth]{Fig2.png}
 \caption{flow diagram of creating/removing a group of users}
 \label{userChange}.
 \end{figure}
