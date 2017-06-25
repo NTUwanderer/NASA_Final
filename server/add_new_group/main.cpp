@@ -15,14 +15,17 @@ int main(int argc, char** argv)
    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
    int start_num = stoi(argv[2]);
    int last_num = stoi(argv[3]);
-   int* usernum = new int [numNFS];
    vector<int> userlist; 
    for (i=start_num;i<=last_num;++i)
       userlist.push_back(i);
    shuffle(userlist.begin(), userlist.end(), default_random_engine(seed));
+   cout << numNFS << endl;
    for (i=1;i<=numNFS;++i) {
-      sort(userlist.begin()+j, userlist.begin()+i*userlist.size()/numNFS+1);      
-      for (;j<=i*userlist.size()/numNFS;++j)
-         printf("%s%03d\tnfs%d\n",argv[1],userlist[j],i);
+      k = i*userlist.size()/numNFS;
+      sort(userlist.begin()+j, userlist.begin()+k);
+      cout << (k-j);
+      for (;j<k;++j)
+         printf(" %s%03d", argv[1], userlist[j]);
+      cout << endl;
    }
 }
