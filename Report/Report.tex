@@ -24,9 +24,11 @@ providing $M$ users to access their home directory, we have to support following
    \item If there are old NFS servers discarded, we have to move the home directories to other NFS servers.
    \end{enumerate}
 In this project, all VMs are under CentOS 7
+
 \section{Workstation Environment Simulation}
 \subsection{Structure}
 \begin{figure}[H]
+\centering
 \includegraphics[height=0.2\textheight]{Fig1.png}
 \caption{Structure of the workstation}
 \end{figure}
@@ -42,11 +44,13 @@ Name=enp0s8
 Address=192.168.100.3/24
 \end{minted}
 So that the IP addresses of NFS server and workstation server will be constant, which is the value given manually.
-And the mount points are divided by grades of users. i.e. b03, b04, b05, etc. For example, in NFS-1:
+And the mount points are divided by grades of users. i.e. b03, b04, b05, etc. For example, in NFS-1, mount points are
+/etc/nfsshare/\{b03902,b04902,b05902\}
 \subsection{Server Setup}
-First, to decrease system loading, we use {\cs autofs} to mount the NFS directories. Only when the directories are used will the 
-directories be mounted. If a directory is not used for a given time, it will be unmounted. 
- \section{Creating One Single User}
+First, to decrease system loading, we use {\cs autofs} to mount the NFS directories. Only when the mounted points are used will they be mounted. 
+If a mount point is not used for a given time, it will be unmounted. 
+
+\section{Creating One Single User}
 There are several steps we must follow to create a user:
    \begin{enumerate}
    \item Give a user name and password
@@ -54,16 +58,9 @@ There are several steps we must follow to create a user:
    \item Link the home directory to NFS
    \item Change the owner of the home directory of the user.
    \end{enumerate}
+Part of our script to do this is shown as following:
 \begin{framed}
 \begin{minted}{shell}
-#!/usr/bin/bash
-if [ $# -lt 3 ]; then
-   echo "Usage: add_user.sh <grade> <username> <NFSname>"
-   exit 1
-fi
-grade=$1
-username=$2
-nfs=$3
 useradd $username -d /home/$grade/$username
 echo -e "$username\n$username\n" | passwd $username >& /dev/null
 mv /home/$grade/$username /autofs/$nfs/$grade/$username
@@ -71,31 +68,30 @@ ln -s /autofs/$nfs/$grade/$username /home/$grade/$username
 chown -R $username /autofs/$nfs/$grade/$username
 \end{minted}
 \end{framed}
-After this, we create a new user whose home directory is a symbolic link to the directory lies in NFS server.
-\section{Creating A Group of Users}
-Suppose now we want to create accounts for freshmen, e.g. b06902\{001-120\}. First, for convinence, we need some scripts to support
-follow data transform.
-\begin{figure}[H]
+After execution of this script, we create a new user whose home directory is a symbolic link to the directory lies in NFS server.
+
+\section{Creating or Deleting A Group of Users}
+Suppose now we want to create accounts for freshmen, e.g. b06902\{001-120\}. 
+Or more generally, we want to create or remove tens of or hundres of users.
+The only data now we have is the current user\_list and the current distribution.
+All we need to do is shown in Figure \ref{userChange}.
+\begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{Fig2.png}
+\includegraphics[width=\textwidth]{Fig2.png}
+\caption{flow diagram of creating/removing a group of users}
+\label{userChange}.
 \end{figure}
-And the main problem here is how to distribute users among NFS servers. To both consider randomness and even distribution,
-we first shuffle the list, then evenly distribute the list to each server. To be more clearly, 
-part of codes to do this job is shown below.
-\begin{framed}
-\begin{minted}{c++}
-shuffle(userlist.begin(), userlist.end());
-cout << numNFS << endl;
-for (i=1;i<numNFS;++i) {
-   k = i*userlist.size()/numNFS;
-   sort(userlist.begin()+j, userlist.begin()+k);
-   cout << k-j;
-   for (;j<k;++j)
-      printf(" %s%03d", prefix, userlist[j]);
-   cout << endl;
-}
-\end{minted}
-\end{framed}
+There are two main changes we have to manage: on {\bf NFS server} side (distribution) and {\bf workstation server} side
+(add/remove home directories). To be more clearly, following are steps we should do:
+   \begin{enumerate}
+   \item Backup the old user\_list and generate a new user\_list base on the old one upon need.
+   \item Call {\cs distribute.out} and input the modified user\_list and old distribution.
+   This program will compare those files to redistribute the newly created user or remove users to balance the distribution.
+   \item Call {\cs group\_user\_change} to compare the previous user\_list and modified user\_list to figure out
+   the home directories links we have to modify.
+   \item Call {\cs update\_users.sh} and input distribution/changes and group\_user\_change to complete the modifications on workserver server and NFS server.
+   \end{enumerate}
+
 \section{Creating New NFS Server}
 Steps are as following:
    \begin{enumerate}
@@ -122,5 +118,10 @@ Steps are as following:
 \subsection{Decide The New Distribution}
 Similar to adding new NFS server, we use a C++ program to distribute the users on the to-be-deleted server to other servers,
 and figure out the users that are influenced.
+\subsection{Move The Directories to New NFS Server}
+\subsection{Update Symbolic Link}
 \section{Difficulties}
+Every single jobs look easy, but how to integrate them for more convinient use is the main problem of this program.
+Though each steps looks easy, but we nead a clear structure to specify them. For example, I/O format should be 
+accord between programs/scripts, and packeting all programs and scripts into a single script for administrator's convinence.
 \end{document}
