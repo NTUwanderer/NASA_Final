@@ -1,0 +1,125 @@
+\documentclass{article}
+\usepackage{xeCJK, amsmath, amssymb, fontspec, geometry, color, enumerate, framed, CJKnumb}
+\usepackage{float, subcaption, minted}
+\defaultCJKfontfeatures{AutoFakeBold=4, AutoFakeSlant=.4}
+\setCJKmainfont{DFKai-SB}
+\setmonofont{Courier}
+\title{NASA 2017 Final Project \\ SA\#2 NFS Server Static Load Balance}
+\author{B03901018\, 電機三\, 楊程皓\\ B03901078\, 電機三\, 蔡承佑\\ B05902053\, 資工一\, 陳奕均}
+\everymath{\displaystyle}
+\geometry{tmargin=20pt}
+\begin{document}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\br}[1]{\left( #1 \right)}
+\newcommand{\sbr}[1]{\left[ #1 \right]}
+\newfontfamily\cs{Courier}
+\maketitle
+\section{Introduction}
+Currently, we have only one NFS server supplying all the workstation. Now suppose we have $N$ NFS server, 
+providing $M$ users to access their home directory, we have to support following functions:
+   \begin{enumerate}
+   \item If a new grade of students joins, we have to use scripts to create their corresponding home directory on NFS.
+   \item If new NFS servers joins, we have to adjust the home directories to balance the load.
+   \item If there are old NFS servers discarded, we have to move the home directories to other NFS servers.
+   \end{enumerate}
+In this project, all VMs are under CentOS 7
+\section{Workstation Environment Simulation}
+\subsection{Structure}
+\begin{figure}[H]
+\includegraphics[height=0.2\textheight]{Fig1.png}
+\caption{Structure of the workstation}
+\end{figure}
+\subsection{NFS Setup}
+In NFS server, we must write the IP of the server in {\cs /etc/exports} to share directories to the workstation server.
+It is important that the IP address of NFS server and workstation server must be constant.
+In {\cs /etc/systemd/network/25-wired.network}, we add \\
+\begin{minted}{shell}
+[Match]
+Name=enp0s8
+
+[Network]
+Address=192.168.100.3/24
+\end{minted}
+So that the IP addresses of NFS server and workstation server will be constant, which is the value given manually.
+And the mount points are divided by grades of users. i.e. b03, b04, b05, etc. For example, in NFS-1:
+\subsection{Server Setup}
+First, to decrease system loading, we use {\cs autofs} to mount the NFS directories. Only when the directories are used will the 
+directories be mounted. If a directory is not used for a given time, it will be unmounted. 
+ \section{Creating One Single User}
+There are several steps we must follow to create a user:
+   \begin{enumerate}
+   \item Give a user name and password
+   \item Set the home directory
+   \item Link the home directory to NFS
+   \item Change the owner of the home directory of the user.
+   \end{enumerate}
+\begin{framed}
+\begin{minted}{shell}
+#!/usr/bin/bash
+if [ $# -lt 3 ]; then
+   echo "Usage: add_user.sh <grade> <username> <NFSname>"
+   exit 1
+fi
+grade=$1
+username=$2
+nfs=$3
+useradd $username -d /home/$grade/$username
+echo -e "$username\n$username\n" | passwd $username >& /dev/null
+mv /home/$grade/$username /autofs/$nfs/$grade/$username
+ln -s /autofs/$nfs/$grade/$username /home/$grade/$username
+chown -R $username /autofs/$nfs/$grade/$username
+\end{minted}
+\end{framed}
+After this, we create a new user whose home directory is a symbolic link to the directory lies in NFS server.
+\section{Creating A Group of Users}
+Suppose now we want to create accounts for freshmen, e.g. b06902\{001-120\}. First, for convinence, we need some scripts to support
+follow data transform.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{Fig2.png}
+\end{figure}
+And the main problem here is how to distribute users among NFS servers. To both consider randomness and even distribution,
+we first shuffle the list, then evenly distribute the list to each server. To be more clearly, 
+part of codes to do this job is shown below.
+\begin{framed}
+\begin{minted}{c++}
+shuffle(userlist.begin(), userlist.end());
+cout << numNFS << endl;
+for (i=1;i<numNFS;++i) {
+   k = i*userlist.size()/numNFS;
+   sort(userlist.begin()+j, userlist.begin()+k);
+   cout << k-j;
+   for (;j<k;++j)
+      printf(" %s%03d", prefix, userlist[j]);
+   cout << endl;
+}
+\end{minted}
+\end{framed}
+\section{Creating New NFS Server}
+Steps are as following:
+   \begin{enumerate}
+   \item Setup NFS server for the workstation server to connect to and mount.
+   \item Generate a new distribution list and find the users that are to be moved.
+   \item Move the directories of these users to the new server.
+   \item Update the symbolic link of the home directories of these users.
+   \end{enumerate}
+\subsection{Setup NFS Server}
+For administrator's convinence, we can {\cs ssh} to the NFS server from workstation server and setup directories to share in
+{\cs /etc/exports}. Then setup the autofs at the workstation side ({\cs /etc/auto.master, /etc/auto.nfs*})
+\subsection{Find The Users To Be Moved}
+We write a C++ program to do this job. The input is the previous distribution list, and output would be a new distribution list and
+the modification we should make. We evenly take some users from each server, and move them to the new server.
+\subsection{Move The Directories}
+\section{Deleting Old NFS Server}
+Quite similar to adding new NFS server, but now we need not to setup a new server.
+Steps are as following:
+   \begin{enumerate}
+   \item Decide the new distribution
+   \item Move the directories to the new distributed NFS server
+   \item Update the symbolic link of the home directories of these users.
+   \end{enumerate}
+\subsection{Decide The New Distribution}
+Similar to adding new NFS server, we use a C++ program to distribute the users on the to-be-deleted server to other servers,
+and figure out the users that are influenced.
+\section{Difficulties}
+\end{document}
