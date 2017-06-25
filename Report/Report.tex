@@ -98,7 +98,7 @@ Steps are as following:
    \item Setup NFS server for the workstation server to connect to and mount.
    \item Generate a new distribution list and find the users that are to be moved.
    \item Move the directories of these users to the new server.
-   \item Update the symbolic link of the home directories of these users.
+   \item Update the symbolic links of the home directories of these users.
    \end{enumerate}
 \subsection{Setup NFS Server}
 For administrator's convinence, we can {\cs ssh} to the NFS server from workstation server and setup directories to share in
@@ -107,21 +107,39 @@ For administrator's convinence, we can {\cs ssh} to the NFS server from workstat
 We write a C++ program to do this job. The input is the previous distribution list, and output would be a new distribution list and
 the modification we should make. We evenly take some users from each server, and move them to the new server.
 \subsection{Move The Directories}
+According to the modification, move the files of specified users from the previous nfs to the new nfs. This job is done using the same script as adding / deleting users since the input format is set the same.
+\subsection{Update symbolic links}
+In the end, we update the symbolic links of the home directories of these users according to the modification. After this, next time the users will login with new nfs servers keeping their home directories.
 \section{Deleting Old NFS Server}
 Quite similar to adding new NFS server, but now we need not to setup a new server.
 Steps are as following:
    \begin{enumerate}
-   \item Decide the new distribution
-   \item Move the directories to the new distributed NFS server
+   \item Decide the new distribution.
+   \item Move the directories to the new distributed NFS server.
    \item Update the symbolic link of the home directories of these users.
+   \item Unmount the NFS servers and update the workstation server's autofs configuration.
    \end{enumerate}
 \subsection{Decide The New Distribution}
-Similar to adding new NFS server, we use a C++ program to distribute the users on the to-be-deleted server to other servers,
-and figure out the users that are influenced.
+Similar to adding new NFS server, we use a C++ program to distribute the users on the to-be-deleted server to other servers, and figure out the users that are influenced. We can delete multiple NFS servers at the same time to avoid moving the data more than once by deleting them one by one.
 \subsection{Move The Directories to New NFS Server}
+Same as the above. Use the same input format and script to do this job.
 \subsection{Update Symbolic Link}
+Same as the above.
+\subsection{Unmount NFS servers}
+In the end, the NFS servers we want to shutdown have no critical data now and can be safely removed from the system. Update the workstation server's autofs configuration and the NFS servers are off-duty.
 \section{Difficulties}
-Every single jobs look easy, but how to integrate them for more convinient use is the main problem of this program.
-Though each steps looks easy, but we nead a clear structure to specify them. For example, I/O format should be 
-accord between programs/scripts, and packeting all programs and scripts into a single script for administrator's convinence.
+Every single job looks easy, but how to integrate them for more convinient use is the main problem of this project.
+Though each step looks easy, but we nead a clear structure to specify them. For example, I/O format should be 
+accord between programs/scripts, and all programs and scripts should be packeted into a single script for administrator's convenience.
+
+There are still some difficulties.
+
+\subsection{Mount Points \& NFS Servers Arrangement}
+In the ideal situation, the load of each mount point should be the same so that autofs can have the highest probability to unmount from time to time. Or in another scheme, we may put those who have the highest loadings in the same mount point so that other mount points can be unmounted longer. The loading of each NFS servers should be the same, and the amount of data should be fairly distributed so that when one of the servers fails, we need the least effort to restore the data and fix the system.
+
+In reality, it's hard to determine the loading of each user in this project, so we assume each user has the same loading. Furthermore, with the requirement that we should change the least amount of user's data during adding/removing users/NFS servers, it's hard to come up with a good algorithm to maintain the optimal distribution when adding/removing users/NFS servers are all possible. Currently we use groups as mount points for simplicity (such as b05902, b06902, others), although number of users in each group may not be the same. Then we distribute the users into NFS servers with the same size. When adding/removing users/NFS servers, we maintain the same number of users in NFS servers so that the expected loading of each NFS server is the same and the effort to move the data is minimized.
+
+\subsection{Selinux Context of home directories}
+When we were trying to login into users we just created, we cannot set selinux context of the symbolic link correctly (seems to be unconfined\_u:object\_r:user\_home\_dir\_t:s0). The system will show ``permission denied'' when trying to load the home directory. However, the problem only occurs when trying to login with tty. But somehow  with ssh, this problem doesn't exist. We temporarily use selinux permissive to login with tty.
+
 \end{document}
