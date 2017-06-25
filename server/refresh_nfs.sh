@@ -6,11 +6,12 @@ IFS=$'\n'
 
 changes="changes"
 user_list="user_list"
+rootpass="root"
 
-scp $2 $1:~/$changes
-scp $3 $1:~/$user_list
+sshpass -p $rootpass scp $2 $1:~/$changes
+sshpass -p $rootpass scp $3 $1:~/$user_list
 
-ssh $1 << EOF
+sshpass -p $rootpass ssh $1 << EOF
 	./refresh_mountpoints.sh $changes $user_list
 EOF
 

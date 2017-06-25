@@ -55,7 +55,9 @@ for (( count=0; $count<$nol; count=$count+1 )); do
 			temp=$(echo "$modified" | sed -n "$((count+i+2))p")
 			groupAndName=$(echo "$temp" | cut -d' ' -f1)
 			from=$(echo "$temp" | cut -d' ' -f2)
+			from=$(echo "$nfs_servers" | cut -d' ' -f"$((from+1))")
 			to=$(echo "$temp" | cut -d' ' -f3)
+			to=$(echo "$nfs_servers" | cut -d' ' -f"$((to+1))")
 
 			./move_user.sh $groupAndName $from $to
 		done

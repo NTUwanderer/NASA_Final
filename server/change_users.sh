@@ -12,12 +12,12 @@ nuser=$1
 ouser=$2
 odist=$3
 nfsList=$4
-ndist="dist/dist$(date "+%Y%m%d%H%M%S")"
+ndist="dist/current_dist"
 
 
 # Figure out changes
-distribute/main.out $nuser $odist distribute/dist distribute/modified
-group_user_change/main.out $ouser $nuser > group_user_change/changes
+exec/distribute.out $nuser $odist distribute/dist distribute/modified
+exec/group_user_change.out $ouser $nuser > group_user_change/changes
 
 # Update on NFS side
 for line in $(cat ${nfsList}); do
@@ -30,4 +30,5 @@ done
 # Update on workstation side
 ./update_autofs.sh extract_groups.sh $nuser $nfsList
 ./update_users.sh group_user_change/changes $nfsList distribute/modified
+mv $odist "dist/$(date "+%Y%m%d%H%M%S")"
 cp distribute/dist $ndist

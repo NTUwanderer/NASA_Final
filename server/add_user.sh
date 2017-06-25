@@ -8,7 +8,7 @@ prefix="/autofs/"
 group=$(echo $1 | cut -d'/' -f1)
 name=$(echo $1 | cut -d'/' -f2)
 
-useradd $name -d /home/$1
+useradd $name -d /home/$1 >& /dev/null
 echo -e "${name}\n${name}\n" | passwd "$name" >& /dev/null
 usermod -a -G $group $name
 

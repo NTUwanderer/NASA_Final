@@ -24,17 +24,17 @@ empty_list="user_list/empty_list"
 change_nfs="exec/change_nfs.out"
 group_user_change="exec/group_user_change.out"
 
-update_autofs="update_autofs.sh"
-update_users="update_users.sh"
-setup_ssh="setup_ssh.sh"
-refresh_nfs="refresh_nfs.sh"
+update_autofs="./update_autofs.sh"
+update_users="./update_users.sh"
+setup_ssh="./setup_ssh.sh"
+refresh_nfs="./refresh_nfs.sh"
 
 for entry in $(cat $added_list_of_nfs_path); do
 	number=$(echo "$entry" | cut -f1 -d' ' | cut -f2 -d's') # Make sure name is in nfsXXX format
 	ip=$(echo "$entry" | cut -f2 -d' ')
 	sshname=$(echo "$entry" | cut -f2 -d' ')
 
-	$setup_ssh $number $ip
+# $setup_ssh $number $ip
 
 	temp_change="temp/tc_$tempTimeStamp"
 	$group_user_change $empty_list $user_list > $temp_change
@@ -46,10 +46,14 @@ done
 mv $dist $prev_dist
 mv $list_of_nfs_path $prev_list_of_nfs_path
 
+echo "$add_nfs $prev_list_of_nfs_path $added_list_of_nfs_path $change_nfs $prev_dist $dist $modified $list_of_nfs_path"
+
 $add_nfs $prev_list_of_nfs_path $added_list_of_nfs_path $change_nfs $prev_dist $dist $modified $list_of_nfs_path
 
 
+echo "$update_autofs extract_groups.sh $user_list $list_of_nfs_path"
 $update_autofs extract_groups.sh $user_list $list_of_nfs_path
 
+echo "$update_users $empty $list_of_nfs_path $modified"
 $update_users $empty $list_of_nfs_path $modified
 

@@ -20,8 +20,8 @@ user_list="user_list/current_user_list"
 change_nfs="exec/change_nfs.out"
 group_user_change="exec/group_user_change.out"
 
-update_autofs="update_autofs.sh"
-update_users="update_users.sh"
+update_autofs="./update_autofs.sh"
+update_users="./update_users.sh"
 
 str="'$*"
 str=$(echo $str | cut -d' ' -f2-)
