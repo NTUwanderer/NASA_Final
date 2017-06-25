@@ -1,10 +1,10 @@
 #!/bin/bash
-# input: list_of_nfs, added_list_of_nfs, change_nfs/main.out, prev_dist, dist, modified
+# input: list_of_nfs, added_list_of_nfs, change_nfs/main.out, prev_dist, dist, modified, new list
 # call update_autofs.sh, update_users.sh after this script
 
 IFS=$'\n'
 
-newList="new_list_of_nfs"
+newList=$7
 
 list_of_nfs=$(cat $1)
 added_list_of_nfs=$(cat $2)

@@ -1,10 +1,10 @@
 #!/bin/bash
 # input: extract_groups.sh, user_list, list_of_nfs
-# change baseDIR to execute in production
+# change baseDIR to "/" to execute in production
 
 IFS=$'\n'
 
-baseDIR="./"
+baseDIR="/"
 
 groups=$(./$1 $2)
 pathToAutofs="${baseDIR}etc/"
