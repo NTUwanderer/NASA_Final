@@ -46,14 +46,10 @@ done
 mv $dist $prev_dist
 mv $list_of_nfs_path $prev_list_of_nfs_path
 
-echo "$add_nfs $prev_list_of_nfs_path $added_list_of_nfs_path $change_nfs $prev_dist $dist $modified $list_of_nfs_path"
 
 $add_nfs $prev_list_of_nfs_path $added_list_of_nfs_path $change_nfs $prev_dist $dist $modified $list_of_nfs_path
 
-
-echo "$update_autofs extract_groups.sh $user_list $list_of_nfs_path"
 $update_autofs extract_groups.sh $user_list $list_of_nfs_path
 
-echo "$update_users $empty $list_of_nfs_path $modified"
 $update_users $empty $list_of_nfs_path $modified
 

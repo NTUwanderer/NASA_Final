@@ -10,7 +10,7 @@ timestamp
 remove_nfs="./remove_nfs.sh"
 prev_list_of_nfs_path="nfs_list/$tempTimeStamp"
 list_of_nfs_path="nfs_list/current_list_of_nfs"
-added_list_of_nfs_path=$1
+# added_list_of_nfs_path=$1
 prev_dist="dist/$tempTimeStamp"
 dist="dist/current_dist"
 modified="temp/m_$tempTimeStamp"
@@ -24,7 +24,7 @@ update_autofs="./update_autofs.sh"
 update_users="./update_users.sh"
 
 str="'$*"
-str=$(echo $str | cut -d' ' -f2-)
+# str=$(echo $str | cut -d' ' -f2-)
 
 mv $dist $prev_dist
 mv $list_of_nfs_path $prev_list_of_nfs_path

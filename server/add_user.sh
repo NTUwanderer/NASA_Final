@@ -18,6 +18,7 @@ rm -rf /home/$1
 ln -s ${prefix}$2/$1 /home/$1
 
 chown -R ${name}:${group} ${prefix}$2/$1
+echo 'Hello World' > /home/$1/${name}.test
 IFS=$' '
 nfsList=$(echo $* | cut -d' ' -f3-)
 
