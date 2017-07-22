@@ -4,14 +4,16 @@
 
 IFS=$'\n'
 
+sh_path="/root/NASA_Final/nfs/"
 changes="changes"
 user_list="user_list"
-rootpass="root"
+passphrase=$1
 
-sshpass -p $rootpass scp $2 $1:~/$changes
-sshpass -p $rootpass scp $3 $1:~/$user_list
+scp $2 $1:${sh_path}$changes
+scp $3 $1:${sh_path}$user_list
 
-sshpass -p $rootpass ssh $1 << EOF
+ssh $1 << EOF
+	cd $sh_path
 	./refresh_mountpoints.sh $changes $user_list
 EOF
 

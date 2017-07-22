@@ -32,7 +32,7 @@ refresh_nfs="./refresh_nfs.sh"
 for entry in $(cat $added_list_of_nfs_path); do
 	number=$(echo "$entry" | cut -f1 -d' ' | cut -f2 -d's') # Make sure name is in nfsXXX format
 	ip=$(echo "$entry" | cut -f2 -d' ')
-	sshname=$(echo "$entry" | cut -f2 -d' ')
+	sshname=$(echo "$entry" | cut -f3 -d' ')
 
 # $setup_ssh $number $ip
 

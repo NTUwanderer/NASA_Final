@@ -1,3 +1,3 @@
 CFLAGS=-std=c++11 -O3
 main:
-	g++ $(CFLAGS) main.cpp -o distribution.out
+	g++ $(CFLAGS) main.cpp -o distribute.out
